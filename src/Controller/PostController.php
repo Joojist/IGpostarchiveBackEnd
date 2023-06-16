@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Post;
 use App\Entity\Comment;
-use app\Entity\IgUser;
+use App\Entity\IgUser;
 use App\Entity\Media;
 use App\Repository\PostRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -66,7 +66,7 @@ class PostController extends AbstractController
         }
 
         // Create and associate the IGUser entity
-        $igUser = new IGUser();
+        $igUser = new IgUser();
         $igUser->setUsername($postData['igUser']['username']);
         // Set other properties of the IGUser entity
         // ...
