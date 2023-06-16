@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use DateTimeInterface;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\IgUserRepository")
  * @ORM\Table(name="IgUser")
  */
 class IgUser

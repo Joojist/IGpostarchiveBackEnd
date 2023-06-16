@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\IgUserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,7 +16,7 @@ class IgUserController extends AbstractController
 
     public function __construct(
         EntityManagerInterface $entityManager,
-        \Doctrine\Persistence\ObjectRepository $igUserRepository
+        IgUserRepository $igUserRepository
     ) {
         $this->entityManager = $entityManager;
         $this->igUserRepository = $igUserRepository;

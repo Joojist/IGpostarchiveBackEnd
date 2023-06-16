@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Media;
+use App\Repository\MediaRepository;
 
 class MediaController extends AbstractController
 {
@@ -15,7 +16,7 @@ class MediaController extends AbstractController
 
     public function __construct(
         EntityManagerInterface $entityManager,
-        \Doctrine\Persistence\ObjectRepository $mediaRepository
+        MediaRepository $mediaRepository
     ) {
         $this->entityManager = $entityManager;
         $this->mediaRepository = $mediaRepository;
