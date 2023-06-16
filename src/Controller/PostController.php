@@ -6,6 +6,7 @@ use App\Entity\Post;
 use App\Entity\Comment;
 use app\Entity\IgUser;
 use App\Entity\Media;
+use App\Repository\PostRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,10 +16,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class PostController extends AbstractController
 {
     private $entityManager;
+    private $postRepository;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $entityManager, PostRepository $postRepository)
     {
         $this->entityManager = $entityManager;
+        $this->postRepository = $postRepository;
     }
 
     /**
@@ -77,4 +80,17 @@ class PostController extends AbstractController
         // Return a response indicating success
         return $this->json(['message' => 'Post saved successfully'], Response::HTTP_OK);
     }
+    public function getPost($id): Response
+    {
+        // Find the Post entity by its ID
+        $post = $this->postRepository->find($id);
+
+        if (!$post) {
+            return new Response('Post not found', Response::HTTP_NOT_FOUND);
+        }
+
+        // Return the Post data as a response
+        return new Response(sprintf('Post ID: %d, Title: %s, Content: %s', $post->getId(), $post->getTitle(), $post->getContent()));
+    }
+
 }
