@@ -1,23 +1,43 @@
 <?php
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
-use Doctrine\Common\Annotations\AnnotationReader;
+use App\Entity\Posts;
+use App\Entity\Medias;
+use App\Entity\Comments;
+use App\Entity\IgUsers;
+use Doctrine\ORM\Configuration;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
-use App\Entity\Post;
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\AnnotationRegistry;
+
 
 require_once "vendor/autoload.php";
 
-// Create a simple "default" Doctrine ORM configuration
-$isDevMode = true;
-$entitiesPath = [__DIR__."/src"];
 $dbParams = include 'config/database.php';
+$paths = [
+    __DIR__ . '/src/Entity',
+    __DIR__."/src"
+];
 
-// Doctrine configuration
-$config = Setup::createAnnotationMetadataConfiguration($entitiesPath, $isDevMode);
-$driver = new AnnotationDriver(new AnnotationReader(), $entitiesPath);
-$config->setMetadataDriverImpl($driver);
+foreach ($paths as $path) {
+    if (!is_dir($path)) {
+        throw new \InvalidArgumentException(sprintf('Entity path "%s" does not exist or is not a directory.', $path));
+    }
+}
+
+// Set up configuration
+$isDevMode = true;
+$config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode);
+$config->setProxyDir(__DIR__ . '/Proxies'); // Assuming the "Proxies" directory is at the same level as the bootstrap.php file
+$config->setProxyNamespace('Proxies');
+
+// Create annotation driver
+$annotationDriver = new AnnotationDriver(new AnnotationReader(), false);
+AnnotationRegistry::loadAnnotationClass('class_exists');
+$config->setMetadataDriverImpl($annotationDriver);
 
 $entityManager = EntityManager::create($dbParams, $config);
 
@@ -44,31 +64,43 @@ try {
     exit(1);
 }
 
-$post = new Post();
+// Create a new Posts entity
+$post = new Posts();
+$post->setPath('example.jpg');
+$post->setLikes(0);
+$post->setCreatorId(1);
+$post->setIgCreatedAt(new \DateTime());
+$post->setCreatedAt(new \DateTime());
+$post->setCaption('Example post');
+$post->setTags(['tag1', 'tag2']);
 
-// Set values for the properties
-$post->setLikes(50);
-$post->setCreatorId(456);
-$post->setUpdaterId(789);
-$post->setPath('C');
+// Create a new Media entity and add it to the post
+$media = new Medias();
+$media->setPath('example.jpg');
+$post->addMedia($media);
 
-// Create DateTime objects for date properties
-$igCreatedAt = new \DateTime('2023-06-12 10:00:00');
-$createdAt = new \DateTime('2023-06-12 10:00:00');
-$updatedAt = new \DateTime('2023-06-12 10:00:00');
-$deletedAt = new \DateTime('2023-06-12 10:00:00');
+// Create a new IgUsers entity and associate it with the post
+$igUser = new IgUsers();
+$igUser->setUsername('john_doe');
+$post->setIgUser($igUser);
 
-// Set date values for date properties
-$post->setIgCreatedAt($igCreatedAt);
-$post->setCreatedAt($createdAt);
-$post->setUpdatedAt($updatedAt);
-$post->setDeletedAt($deletedAt);
+// Create a new Comment entity and add it to the post
+$comment1 = new Comments();
+$comment1->setContent('This is the first comment');
+$post->addComment($comment1);
 
-// ... Perform additional operations with the entity ...
+$comment2 = new Comments();
+$comment2->setContent('This is the second comment');
+$post->addComment($comment2);
 
-// Persist the entity
-$entityManager->persist($post);
-
-// Flush the changes to the database
-$entityManager->flush();
+// Save the post
+try {
+    $entityManager->persist($post);
+    $entityManager->flush();
+    echo "Post saved successfully with ID: " . $post->getId() . PHP_EOL;
+} catch (\Exception $e) {
+    echo "Failed to save the post: " . $e->getMessage() . PHP_EOL;
+    echo "Stack trace: " . $e->getTraceAsString() . PHP_EOL;
+    exit(1);
+}
 
