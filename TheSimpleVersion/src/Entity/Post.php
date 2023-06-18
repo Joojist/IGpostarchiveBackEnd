@@ -41,7 +41,7 @@ class Post
     private $creatorId;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $updaterId;
 
@@ -56,12 +56,12 @@ class Post
     private $createdAt;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $updatedAt;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $deletedAt;
 
@@ -79,7 +79,7 @@ class Post
      * @ORM\ManyToOne(targetEntity="IGUser", inversedBy="posts")
      * @ORM\JoinColumn(name="ig_user_id", referencedColumnName="id")
      */
-    private $igUser;
+    private $igUser1;
     /**
      * @ORM\OneToMany(targetEntity="Comment", mappedBy="post", cascade={"persist", "remove"})
      */
@@ -127,12 +127,12 @@ class Post
 
     public function getIgUser(): ?IGUser
     {
-        return $this->igUser;
+        return $this->igUser1;
     }
 
-    public function setIgUser(?IGUser $igUser): self
+    public function setIgUser(?IGUser $igUser1): self
     {
-        $this->igUser = $igUser;
+        $this->igUser1 = $igUser1;
         return $this;
     }
 
@@ -180,11 +180,12 @@ class Post
         return $this->updaterId;
     }
 
-    public function setUpdaterId(int $updaterId): self
-    {
-        $this->updaterId = $updaterId;
-        return $this;
-    }
+    public function setUpdaterId(?int $updaterId): self
+{
+    $this->updaterId = $updaterId ?? null;
+    return $this;
+}
+
 
     public function getIgCreatedAt(): DateTimeInterface
     {
@@ -250,5 +251,20 @@ class Post
     {
         $this->tags = $tags;
         return $this;
+    }
+    /**
+     * @return Collection|Media[]
+     */
+    public function getMedia(): Collection
+    {
+        return $this->media;
+    }
+
+    /**
+     * @return Collection|Comment[]
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
     }
 }

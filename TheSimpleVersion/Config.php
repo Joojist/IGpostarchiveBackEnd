@@ -8,12 +8,10 @@ use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 
 require_once "vendor/autoload.php";
 
-// Create a simple "default" Doctrine ORM configuration
 $isDevMode = true;
 $entitiesPath = [__DIR__."/src"];
 $dbParams = include 'config/database.php';
 
-// Doctrine configuration
 $config = Setup::createAnnotationMetadataConfiguration($entitiesPath, $isDevMode);
 $driver = new AnnotationDriver(new AnnotationReader(), $entitiesPath);
 $config->setMetadataDriverImpl($driver);
