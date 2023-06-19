@@ -4,6 +4,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use App\Entity\Post;
 
 // Autoload the necessary classes (assuming Composer is used)
 require_once "vendor/autoload.php";
@@ -28,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $postData = json_decode($data, true);
 
     // Create a new Post entity
-    $post = new \App\Entity\Post();
+    $post = new Post();
 
     // Set the values for the Post entity based on the received data
     $post->setPath($postData['path']);
@@ -67,6 +68,8 @@ foreach ($mediaData as $mediaItem) {
 
     // Persist the Media entity
     $entityManager->persist($media);
+
+    saveMediaFromUrl($mediaItem['url'], $mediaItem['filename'], $post);
 }
 
 // Persist the Post entity to the database
@@ -99,4 +102,37 @@ $entityManager->flush();
     // Return an error response if the request method is not POST
     $response = ['error' => 'Invalid request method'];
     echo json_encode($response);
+}
+
+/**
+ * Save media file from a given URL with a specific naming convention and ensure authorization
+ *
+ * @param string $url The URL of the media file
+ * @param string $filename The desired filename to save the media as
+ * @param \App\Entity\Post $post The Post entity object
+ */
+function saveMediaFromUrl($url, $filename, $post)
+{
+    $mediaRoot = '/mnt/ig/'; // Change this to the appropriate root path for your media files
+
+    // Generate a unique filename based on PK (assuming $post->getId() returns the primary key value)
+    $uniqueFilename = sprintf('%03d/%03d.jpg', $post->getId() / 1000, $post->getId() % 1000);
+
+    // Create the complete file path
+    $filePath = $mediaRoot . $uniqueFilename;
+
+    // Download the media file
+    $ch = curl_init($url);
+    $fp = fopen($filePath, 'wb');
+
+    curl_setopt($ch, CURLOPT_FILE, $fp);
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+
+    curl_exec($ch);
+    curl_close($ch);
+    fclose($fp);
+
+    // Ensure the file permissions are set correctly (adjust as needed)
+    chmod($filePath, 0644);
 }
