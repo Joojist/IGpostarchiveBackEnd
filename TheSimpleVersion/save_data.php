@@ -38,11 +38,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $post->setPath($postData['path']);
     $post->setLikes($postData['likes']);
     $post->setCreatorId($postData['creatorId']);
-    $post->setIgCreatedAt(new \DateTime($postData['IgCreatedAt']));
+    $post->setIgCreatedAt(new \DateTime($postData['igCreatedAt']));
     $post->setCreatedAt(new \DateTime);
     $post->setCaption($postData['caption']);
     $post->setTags($postData['tags']);
-    $post->setUserComment($postData['UserComment']);
+    $post->setUserComment($postData['userComment']);
 
     // Validate and add IGUser entity
     $igUser = validateIgUser($postData['igUser']);

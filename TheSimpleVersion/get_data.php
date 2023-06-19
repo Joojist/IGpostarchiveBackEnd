@@ -35,6 +35,7 @@ foreach ($posts as $post) {
         'createdAt' => $post->getCreatedAt()->format('Y-m-d H:i:s'),
         'caption' => $post->getCaption(),
         'tags' => $post->getTags(),
+        'userComment'=> $post->getUserComment(),
         'igUser' => [
             'igId' => $post->getIgUser()->getIgId(),
             'username' => $post->getIgUser()->getUsername(),
