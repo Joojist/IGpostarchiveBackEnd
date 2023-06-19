@@ -1,0 +1,31 @@
+{
+    "path": "path/to/post",
+    "likes": 100,
+    "creatorId": "123",
+    "caption": "Post caption",
+    "tags": [
+        "tag1",
+        "tag2",
+        "tag3"
+    ],
+    "igUser": {
+        "igId": "ig_user_id",
+        "username": "ig_username"
+    },
+    "media": [
+        {
+            "url": "media_url1"
+        },
+        {
+            "url": "media_url2"
+        }
+    ],
+    "comments": [
+        {
+            "text": "Comment 1"
+        },
+        {
+            "text": "Comment 2"
+        }
+    ]
+}
