@@ -1,12 +1,15 @@
 <?php
 
+use App\Entity\Comment;
+use App\Entity\IgUser;
+use App\Entity\Media;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use App\Entity\Post;
 
-// Autoload the necessary classes (assuming Composer is used)
+// Autoload the necessary classes (composer is needed)
 require_once "vendor/autoload.php";
 
 $isDevMode = true;
@@ -31,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Create a new Post entity
     $post = new Post();
 
-    // Set the values for the Post entity based on the received data
+    // Post values
     $post->setPath($postData['path']);
     $post->setLikes($postData['likes']);
     $post->setCreatorId($postData['creatorId']);
@@ -40,9 +43,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $post->setCaption($postData['caption']);
     $post->setTags($postData['tags']);
 
-    // Assuming you have a reference to the IGUser entity based on the $postData['igUserId'] value
-    // Example: $igUser = $entityManager->getRepository(IGUser::class)->find($postData['igUserId']);
-    $igUser = new \App\Entity\IgUser();
+
+
+    // Create a new IgUser and add values
+    $igUser = new IgUser();
     $igUser->setIgId($postData['igUser']['igId']);
     $igUser->setUsername($postData['igUser']['username']);
     $igUser->setCreatedAt(new \DateTime);
@@ -53,36 +57,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Associate the new IGUser entity with the Post entity
     $post->setIgUser($igUser);
 
+
+
     // Loop through the media data and create Media entities
-    // Loop through the media data and create Media entities
-$mediaData = $postData['media'];
-foreach ($mediaData as $mediaItem) {
-    $media = new \App\Entity\Media();
-    $media->setPath($mediaItem['url']);
-    // Set other properties of the Media entity as needed
-    // ...
+    $mediaData = $postData['media'];
+    foreach ($mediaData as $mediaItem) {
+        $media = new Media();
+        $media->setPath($mediaItem['url']);
 
-    // Add the Media entity to the Post
-    $post->addMedia($media);
+        // Add the Media entity to the Post
+        $post->addMedia($media);
 
-    // Persist the Media entity
-    $entityManager->persist($media);
+        // Persist the Media entity
+        $entityManager->persist($media);
 
-    saveMediaFromUrl($mediaItem['url'], $post);
-}
-
-// Persist the Post entity to the database
-$entityManager->persist($post);
-$entityManager->flush();
+        saveMediaFromUrl($mediaItem['url'], $post);
+    }
 
 
     // Loop through the comment data and create Comment entities
     $commentData = $postData['comments'];
     foreach ($commentData as $commentItem) {
-        $comment = new \App\Entity\Comment();
+        $comment = new Comment();
         $comment->setContent($commentItem['text']);
-        // Set other properties of the Comment entity as needed
-        // ...
 
         // Add the Comment entity to the Post
         $post->addComment($comment);
@@ -94,7 +91,6 @@ $entityManager->flush();
     $entityManager->persist($post);
     $entityManager->flush();
 
-    // Return a response to Postman
     $response = ['success' => true];
     echo json_encode($response);
 } else {
@@ -102,6 +98,8 @@ $entityManager->flush();
     $response = ['error' => 'Invalid request method'];
     echo json_encode($response);
 }
+
+
 
 /**
  * Save media file from a given URL with a specific naming convention and ensure authorization
