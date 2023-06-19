@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $post->setPath($postData['path']);
     $post->setLikes($postData['likes']);
     $post->setCreatorId($postData['creatorId']);
-    $post->setIgCreatedAt(new \DateTime);
+    $post->setIgCreatedAt(new \DateTime($postData['IgCreatedAt']));
     $post->setCreatedAt(new \DateTime);
     $post->setCaption($postData['caption']);
     $post->setTags($postData['tags']);
@@ -46,7 +46,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $igUser->setIgId($postData['igUser']['igId']);
     $igUser->setUsername($postData['igUser']['username']);
     $igUser->setCreatedAt(new \DateTime);
-    $igUser->setDeletedAt(new \DateTime);
 
     $entityManager->persist($igUser);
     $entityManager->flush();
@@ -69,7 +68,7 @@ foreach ($mediaData as $mediaItem) {
     // Persist the Media entity
     $entityManager->persist($media);
 
-    saveMediaFromUrl($mediaItem['url'], $mediaItem['filename'], $post);
+    saveMediaFromUrl($mediaItem['url'], $post);
 }
 
 // Persist the Post entity to the database
@@ -108,15 +107,15 @@ $entityManager->flush();
  * Save media file from a given URL with a specific naming convention and ensure authorization
  *
  * @param string $url The URL of the media file
- * @param string $filename The desired filename to save the media as
  * @param \App\Entity\Post $post The Post entity object
  */
-function saveMediaFromUrl($url, $filename, $post)
+function saveMediaFromUrl($url, $post)
 {
-    $mediaRoot = '/mnt/ig/'; // Change this to the appropriate root path for your media files
+    $mediaRoot = __DIR__ .'/images/ig/'; // Change this to the appropriate root path for your media files
 
-    // Generate a unique filename based on PK (assuming $post->getId() returns the primary key value)
-    $uniqueFilename = sprintf('%03d/%03d.jpg', $post->getId() / 1000, $post->getId() % 1000);
+    // Generate a unique filename based on the timestamp
+    $timestamp = time();
+    $uniqueFilename = $timestamp . '.jpg';
 
     // Create the complete file path
     $filePath = $mediaRoot . $uniqueFilename;
