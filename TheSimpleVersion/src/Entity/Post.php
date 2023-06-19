@@ -84,6 +84,10 @@ class Post
      * @ORM\OneToMany(targetEntity="Comment", mappedBy="post", cascade={"persist", "remove"})
      */
     private $comments;
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $userComment;
 
     public function __construct()
     {
@@ -266,5 +270,15 @@ class Post
     public function getComments(): Collection
     {
         return $this->comments;
+    }
+    public function getUserComment(): ?string
+    {
+        return $this->userComment;
+    }
+
+    public function setUserComment(?string $userComment): self
+    {
+        $this->userComment = $userComment;
+        return $this;
     }
 }
