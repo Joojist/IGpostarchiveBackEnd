@@ -89,6 +89,6 @@ If you encounter any issues during setup or usage of the Folklore Program, pleas
 
 ## License
 
-The Folklore Program is released under the MIT License. See the [https://opensource.org/license/mit/](LICENSE) file for more information.
+The Folklore Program is released under the MIT License. See the https://opensource.org/license/mit/ file for more information.
 
 ---
