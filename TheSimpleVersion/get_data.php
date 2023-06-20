@@ -1,11 +1,13 @@
 <?php
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json");
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 
-// Autoload the necessary classes (assuming Composer is used)
+// Autoload the necessary classes (composer is needed)
 require_once "vendor/autoload.php";
 
 $isDevMode = true;
@@ -26,8 +28,8 @@ $posts = $entityManager->getRepository(\App\Entity\Post::class)->findAll();
 $responseData = [];
 
 foreach ($posts as $post) {
+    // Extract the relevant data from the Post entity
     $postData = [
-        'id' => $post->getId(),
         'path' => $post->getArchiver(),
         'likes' => $post->getLikes(),
         'creatorId' => $post->getCreatorId(),
@@ -35,30 +37,53 @@ foreach ($posts as $post) {
         'createdAt' => $post->getCreatedAt()->format('Y-m-d H:i:s'),
         'caption' => $post->getCaption(),
         'tags' => $post->getTags(),
-        'userComment'=> $post->getUserComment(),
-        'igUser' => [
-            'igId' => $post->getIgUser()->getIgId(),
-            'username' => $post->getIgUser()->getUsername(),
-            'createdAt' => $post->getIgUser()->getCreatedAt()->format('Y-m-d H:i:s'),
-            'deletedAt' => $post->getIgUser()->getDeletedAt()->format('Y-m-d H:i:s')
-        ],
-        'media' => [],
-        'comments' => []
+        'userComment' => $post->getUserComment(),
     ];
 
-    foreach ($post->getMedia() as $media) {
-        $postData['media'][] = [
-            'url' => $media->getPath()
-            // Add other media properties as needed
-        ];
-    }
+    // Extract IGUser data
+    $igUser = $post->getIgUser();
+    $igUserData = [
+        'igId' => $igUser->getIgId(),
+        'username' => $igUser->getUsername(),
+    ];
+    $postData['igUser'] = $igUserData;
 
-    foreach ($post->getComments() as $comment) {
-        $postData['comments'][] = [
-            'text' => $comment->getContent()
-            // Add other comment properties as needed
+    // Extract Media data
+    $mediaData = [];
+    $mediaEntities = $post->getMedia();
+    foreach ($mediaEntities as $mediaEntity) {
+        $mediaData[] = [
+            'url' => $mediaEntity->getPath(),
         ];
     }
+    $postData['media'] = $mediaData;
+
+    // Extract Comment data
+    $commentData = [];
+    $commentEntities = $post->getComments();
+    foreach ($commentEntities as $commentEntity) {
+        $commentContent = [
+            'text' => $commentEntity->getContent(),
+            'author' => $commentEntity->getAuthor(),
+        ];
+
+        // Extract Reply data
+        $replyData = [];
+        $replyEntities = $commentEntity->getReplies();
+        foreach ($replyEntities as $replyEntity) {
+            $replyData[] = [
+                'text' => $replyEntity->getContent(),
+                'author' => $replyEntity->getAuthor(),
+            ];
+        }
+        $commentContent['replies'] = $replyData;
+
+        $commentData[] = [
+            'comment' => $commentContent,
+        ];
+    }
+    $postData['comments'] = $commentData;
+
 
     $responseData[] = $postData;
 }

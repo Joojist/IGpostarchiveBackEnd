@@ -1,13 +1,16 @@
 <?php
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json");
 
 use App\Entity\Comment;
 use App\Entity\IgUser;
 use App\Entity\Media;
+use App\Entity\Post;
+use App\Entity\Reply;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
-use App\Entity\Post;
 
 // Autoload the necessary classes (composer is needed)
 require_once "vendor/autoload.php";
@@ -43,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $post->setLikes($postData['likes']);
     $post->setCreatorId($postData['creatorId']);
     $post->setIgCreatedAt(new \DateTime($postData['igCreatedAt']));
-    $post->setCreatedAt(new \DateTime);
+    $post->setCreatedAt(new \DateTime());
     $post->setCaption($postData['caption']);
     $post->setTags($postData['tags']);
     $post->setUserComment($postData['userComment']);
@@ -72,23 +75,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         saveMediaFromUrl($media->getPath(), $post);
     }
 
-    // Validate and add Comment entities
-    // $commentData = $postData['comments'];
-    // foreach ($commentData as $commentItem) {
-    //     $comment = validateComment($commentItem);
-    //     if ($comment === null) {
-    //         $response = ['error' => 'Invalid comment data'];
-    //         echo json_encode($response);
-    //         return;
-    //     }
-    //     $entityManager->persist($comment);
-    //     $post->addComment($comment);
-    // }
+    // Validate and create Comment entities
+    $commentData = $postData['comments'];
+    foreach ($commentData as $commentItem) {
+        $commentContent = $commentItem['comment'];
+        $commentText = $commentContent['text'];
+        $repliesData = isset($commentContent['replies']) ? $commentContent['replies'] : [];
+        $commentAuthor = $commentContent['author'];
+        
+        $comment = new Comment();
+        $comment->setContent($commentText);
+        $comment->setAuthor($commentAuthor);
+
+        // Validate and add Reply entities
+        foreach ($repliesData as $replyData) {
+            $replyText = $replyData['text'];
+            $replyAuthor = $replyData['author'];
+        
+            $reply = new Reply();
+            $reply->setContent($replyText);
+            $reply->setAuthor($replyAuthor);
+            $reply->setComment($comment);
+        
+            $entityManager->persist($reply);
+            $comment->addReply($reply);
+        }
+
+        $entityManager->persist($comment);
+        $post->addComment($comment);
+    }
 
     // Persist the Post entity to the database
     $entityManager->persist($post);
     $entityManager->flush();
 
+    // Send a success response
     $response = ['success' => true];
     echo json_encode($response);
 } else {
@@ -105,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
  */
 function saveMediaFromUrl($url, $post)
 {
-    $mediaRoot = __DIR__ .'/images/ig/'; // Change this to the appropriate root path for your media files
+    $mediaRoot = __DIR__ . '/images/ig/'; // Change this to the appropriate root path for your media files
 
     // Generate a unique filename based on the timestamp
     $timestamp = time();
@@ -147,7 +168,7 @@ function validateIgUser($igUserData)
     $igUser = new IgUser();
     $igUser->setIgId($igUserData['igId']);
     $igUser->setUsername($igUserData['username']);
-    $igUser->setCreatedAt(new \DateTime);
+    $igUser->setCreatedAt(new \DateTime());
 
     return $igUser;
 }
@@ -168,22 +189,4 @@ function validateMedia($mediaData)
     $media->setPath($mediaData['url']);
 
     return $media;
-}
-
-/**
- * Validate and create a Comment entity
- *
- * @param array $commentData The comment data
- * @return \App\Entity\Comment|null The validated Comment entity or null if validation fails
- */
-function validateComment($commentData)
-{
-    if (!isset($commentData->text)) {
-        return null;
-    }
-
-    $comment = new Comment();
-    $comment->setContent($commentData['text']);
-
-    return $comment;
 }
