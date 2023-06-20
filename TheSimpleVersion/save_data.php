@@ -11,6 +11,9 @@ use App\Entity\Post;
 
 // Autoload the necessary classes (composer is needed)
 require_once "vendor/autoload.php";
+header('Access-Control-Allow-Origin: *');
+header('Content-Type: application/json');
+header("Access-Control-Allow-Headers: Content-Type");
 
 $isDevMode = true;
 $entitiesPath = [__DIR__."/src"];
@@ -30,12 +33,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Parse the data as JSON
     $postData = json_decode($data, true);
+    echo json_encode($postData);
 
     // Create a new Post entity
     $post = new Post();
 
     // Post values
-    $post->setPath($postData['path']);
+    $post->setArchiver($postData['archiver']);
     $post->setLikes($postData['likes']);
     $post->setCreatorId($postData['creatorId']);
     $post->setIgCreatedAt(new \DateTime($postData['igCreatedAt']));
@@ -69,17 +73,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Validate and add Comment entities
-    $commentData = $postData['comments'];
-    foreach ($commentData as $commentItem) {
-        $comment = validateComment($commentItem);
-        if ($comment === null) {
-            $response = ['error' => 'Invalid comment data'];
-            echo json_encode($response);
-            return;
-        }
-        $entityManager->persist($comment);
-        $post->addComment($comment);
-    }
+    // $commentData = $postData['comments'];
+    // foreach ($commentData as $commentItem) {
+    //     $comment = validateComment($commentItem);
+    //     if ($comment === null) {
+    //         $response = ['error' => 'Invalid comment data'];
+    //         echo json_encode($response);
+    //         return;
+    //     }
+    //     $entityManager->persist($comment);
+    //     $post->addComment($comment);
+    // }
 
     // Persist the Post entity to the database
     $entityManager->persist($post);
@@ -174,7 +178,7 @@ function validateMedia($mediaData)
  */
 function validateComment($commentData)
 {
-    if (!isset($commentData['text'])) {
+    if (!isset($commentData->text)) {
         return null;
     }
 

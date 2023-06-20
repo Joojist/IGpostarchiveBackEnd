@@ -23,7 +23,7 @@ class Post
     /**
      * @ORM\Column(type="text")
      */
-    private $path;
+    private $archiver;
 
     /**
      * @ORM\OneToMany(targetEntity="Media", mappedBy="post")
@@ -146,14 +146,14 @@ class Post
         return $this->id;
     }
 
-    public function getPath(): string
+    public function getArchiver(): string
     {
-        return $this->path;
+        return $this->archiver;
     }
 
-    public function setPath($path): self
+    public function setArchiver($archiver): self
     {
-        $this->path = $path;
+        $this->archiver = $archiver;
         return $this;
     }
 

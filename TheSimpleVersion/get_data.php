@@ -28,7 +28,7 @@ $responseData = [];
 foreach ($posts as $post) {
     $postData = [
         'id' => $post->getId(),
-        'path' => $post->getPath(),
+        'path' => $post->getArchiver(),
         'likes' => $post->getLikes(),
         'creatorId' => $post->getCreatorId(),
         'igCreatedAt' => $post->getIgCreatedAt()->format('Y-m-d H:i:s'),
