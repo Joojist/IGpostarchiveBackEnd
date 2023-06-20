@@ -1,4 +1,4 @@
-
+# 
 # Folklore Program
 
 The Folklore Program is a PHP-based application that allows users to explore and interact with a folklore database.
