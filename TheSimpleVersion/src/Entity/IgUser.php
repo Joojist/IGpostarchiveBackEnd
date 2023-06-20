@@ -86,9 +86,12 @@ class IgUser
         return $this;
     }
 
-    public function getDeletedAt(): DateTimeInterface
+    /**
+    * @return DateTimeInterface|null
+    */
+    public function getDeletedAt()
     {
-        return $this->deletedAt;
+        return $this->deletedAt?: [];
     }
 
     public function setDeletedAt(DateTimeInterface $deletedAt): self

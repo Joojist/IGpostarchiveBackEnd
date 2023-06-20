@@ -20,7 +20,7 @@ class Comment
     private $id;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $content;
 
@@ -31,15 +31,14 @@ class Comment
     private $post;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Comment", inversedBy="replies")
-     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", nullable=true)
-     */
-    private $parent;
-
-    /**
-     * @ORM\OneToMany(targetEntity="Comment", mappedBy="parent")
+     * @ORM\OneToMany(targetEntity="Reply", mappedBy="comment", cascade={"persist", "remove"})
      */
     private $replies;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $author;
 
     public function __construct()
     {
@@ -51,19 +50,12 @@ class Comment
         return $this->id;
     }
 
-    public function setId(int $id): self
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    public function getContent(): string
+    public function getContent(): ?string
     {
         return $this->content;
     }
 
-    public function setContent(string $content): self
+    public function setContent(?string $content): self
     {
         $this->content = $content;
 
@@ -82,38 +74,46 @@ class Comment
         return $this;
     }
 
-    public function getParent(): ?Comment
+    public function getAuthor(): ?string
     {
-        return $this->parent;
+        return $this->author;
     }
 
-    public function setParent(?Comment $parent): self
+    public function setAuthor(?string $author): self
     {
-        $this->parent = $parent;
+        $this->author = $author;
 
         return $this;
     }
 
+    /**
+     * @return Collection|Reply[]
+     */
     public function getReplies(): Collection
     {
         return $this->replies;
     }
 
-    public function addReply(Comment $reply): self
+    public function addReply(Reply $reply): self
     {
         if (!$this->replies->contains($reply)) {
-            $this->replies[] = $reply;
-            $reply->setParent($this);
+            $reply->setComment($this);
+            $this->replies->add($reply);
         }
 
         return $this;
     }
 
-    public function removeReply(Comment $reply): self
+    public function removeReply(Reply $reply): self
     {
-        $this->replies->removeElement($reply);
+        if ($this->replies->contains($reply)) {
+            $this->replies->removeElement($reply);
+            // set the owning side to null (unless already changed)
+            if ($reply->getComment() === $this) {
+                $reply->setComment(null);
+            }
+        }
 
         return $this;
     }
-
 }
