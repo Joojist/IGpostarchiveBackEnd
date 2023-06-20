@@ -1,49 +1,95 @@
-Folklore Program
-The Folklore Program is a PHP-based application that allows users to explore and interact with a folklore database. This readme provides instructions on how to set up and run the program on your local machine.
 
-Prerequisites
+# Folklore Program
+
+The Folklore Program is a PHP-based application that allows users to explore and interact with a folklore database.
+
+## Table of Contents
+
+- [Prerequisites](#prerequisites)
+- [Setup](#setup)
+- [Installation](#installation)
+- [Testing](#testing)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [Troubleshooting](#troubleshooting)
+- [License](#license)
+
+## Prerequisites
+
 Before getting started, ensure that you have the following prerequisites installed:
 
-PHP (version 8 or higher)
-Composer (version 2.5.8 or higher)
-PostgreSQL (version 15 or higher)
-Setup
-Follow the steps below to set up the Folklore Program:
+- PHP (version 8 or higher)
+- Composer (version 2.5.8 or higher)
+- PostgreSQL (version 15 or higher)
 
-Create a database named "Folklore" (with a capital "F") in your PostgreSQL server. You can use any preferred method to create the database.
+## Setup
 
-Open the config/database.php file and configure the necessary database connection settings. Update the host, port, database name, username, and password according to your PostgreSQL server configuration.
+To set up the Folklore Program, follow these steps:
 
-Installation
-Open a terminal or command prompt and navigate to the directory where you have downloaded or cloned the Folklore Program.
+1. Create a database named "Folklore" (with a capital "F") in your PostgreSQL server.
+   - You can use any preferred method to create the database.
 
-Run the following command to install the required dependencies using Composer:
+2. Open the `config/database.php` file and configure the necessary database connection settings.
+   - Update the host, port, database name, username, and password according to your PostgreSQL server configuration.
 
-shell
-Copy code
-composer install
-After the dependencies are installed, run the following command to generate the autoload files:
+## Installation
 
-shell
-Copy code
-composer dump-autoload
-Testing
+To install the Folklore Program, follow these steps:
+
+1. Open a terminal or command prompt and navigate to the directory where you have downloaded or cloned the Folklore Program.
+
+2. Run the following command to install the required dependencies using Composer:
+
+   ```shell
+   composer install
+   ```
+
+3. After the dependencies are installed, run the following command to generate the autoload files:
+
+   ```shell
+   composer dump-autoload
+   ```
+
+## Testing
+
 To test the Folklore Program, follow these steps:
 
-Run the following command in the project directory to start the program:
+1. Run the following command in the project directory to start the program:
 
-shell
-Copy code
-php config.php
-After the program has started successfully, open a web browser and navigate to http://localhost:8000 (or replace localhost:8000 with the desired hostname and port).
+   ```shell
+   php config.php
+   ```
 
-Use the frontend interface to interact with the Folklore Program and explore the folklore database.
+2. After the program has started successfully, open a web browser and navigate to http://localhost:8000.
+   - Replace `localhost:8000` with the desired hostname and port if needed.
 
-Notes
-Ensure that your PostgreSQL server is running before starting the Folklore Program.
+3. Use the frontend interface to interact with the Folklore Program and explore the folklore database.
 
-If you encounter any issues during setup or testing, refer to the program's documentation or seek assistance from the support team.
+## Usage
 
-Customize the hostname and port number used for the server according to your requirements.
+The Folklore Program provides the following features:
 
-Feel free to modify and enhance the Folklore Program as per your needs.
+- Search and browse folklore entries.
+- View details and descriptions of folklore items.
+- Add new folklore items.
+- Edit and update existing folklore items.
+- Delete folklore items.
+
+Feel free to customize and enhance the Folklore Program to suit your needs.
+
+## Contributing
+
+Contributions to the Folklore Program are welcome! If you would like to contribute, please follow these guidelines:
+- Fork the repository and create a new branch for your feature or improvement.
+- Make your changes and submit a pull request.
+- Ensure that your code adheres to the project's coding standards and is well-documented.
+
+## Troubleshooting
+
+If you encounter any issues during setup or usage of the Folklore Program, please refer to the program's documentation or seek assistance from the support team.
+
+## License
+
+The Folklore Program is released under the MIT License. See the [https://opensource.org/license/mit/](LICENSE) file for more information.
+
+---
