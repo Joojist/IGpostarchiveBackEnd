@@ -40,15 +40,14 @@ To install the Folklore Program, follow these steps:
 
 2. Run the following command to install the required dependencies using Composer:
 
-   ```shell
+   
    composer install
-   ```
 
 3. After the dependencies are installed, run the following command to generate the autoload files:
 
-   ```shell
+
    composer dump-autoload
-   ```
+   
 
 ## Testing
 
@@ -56,9 +55,9 @@ To test the Folklore Program, follow these steps:
 
 1. Run the following command in the project directory to start the program:
 
-   ```shell
+   
    php config.php
-   ```
+
 
 2. After the program has started successfully, open a web browser and navigate to http://localhost:8000.
    - Replace `localhost:8000` with the desired hostname and port if needed.
