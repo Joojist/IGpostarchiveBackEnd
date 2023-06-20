@@ -66,7 +66,7 @@ class Post
     private $deletedAt;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="text")
      */
     private $caption;
 

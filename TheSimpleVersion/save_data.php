@@ -2,6 +2,13 @@
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
 
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    header('Access-Control-Allow-Origin: *');
+    header('Content-Type: application/json');
+    header("Access-Control-Allow-Headers: Content-Type");
+    exit;
+}
+
 use App\Entity\Comment;
 use App\Entity\IgUser;
 use App\Entity\Media;
