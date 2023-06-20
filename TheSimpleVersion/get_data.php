@@ -1,4 +1,6 @@
 <?php
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json");
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;

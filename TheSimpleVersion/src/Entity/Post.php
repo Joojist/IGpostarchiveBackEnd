@@ -36,7 +36,7 @@ class Post
     private $likes;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string")
      */
     private $creatorId;
 
@@ -168,12 +168,12 @@ class Post
         return $this;
     }
 
-    public function getCreatorId(): int
+    public function getCreatorId(): string
     {
         return $this->creatorId;
     }
 
-    public function setCreatorId(int $creatorId): self
+    public function setCreatorId(string $creatorId): self
     {
         $this->creatorId = $creatorId;
         return $this;

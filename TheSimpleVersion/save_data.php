@@ -1,4 +1,6 @@
 <?php
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json");
 
 use App\Entity\Comment;
 use App\Entity\IgUser;
