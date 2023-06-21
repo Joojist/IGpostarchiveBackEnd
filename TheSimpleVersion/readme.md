@@ -56,13 +56,13 @@ To test the Folklore Program, follow these steps:
 1. Run the following command in the project directory to start the program:
 
    
-   php config.php
+   php config.php - to start and update the database, program will also say if you have connected to the database
 
 
-2. After the program has started successfully, open a web browser and navigate to http://localhost:8000.
-   - Replace `localhost:8000` with the desired hostname and port if needed.
+3. After the program has started successfully, open a web browser and navigate to http://localhost:8000.
+   - Replace `php -S localhost:8000` with the desired hostname and port if needed.
 
-3. Use the frontend interface to interact with the Folklore Program and explore the folklore database.
+4. Use the frontend interface to interact with the Folklore Program and explore the folklore database.
 
 ## Usage
 
