@@ -30,7 +30,7 @@ $responseData = [];
 foreach ($posts as $post) {
     // Extract the relevant data from the Post entity
     $postData = [
-        'path' => $post->getArchiver(),
+        'archiver' => $post->getArchiver(),
         'likes' => $post->getLikes(),
         'creatorId' => $post->getCreatorId(),
         'igCreatedAt' => $post->getIgCreatedAt()->format('Y-m-d H:i:s'),
